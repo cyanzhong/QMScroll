@@ -29,6 +29,8 @@ static const CGFloat kTableContentInset = 200;
     CGSize size = self.view.bounds.size;
     
     CGSize scrollSize = CGSizeMake(size.width, size.height - kTabBarHeight - kStatusBarHeight);
+    
+    // bottom scrollView for tabBar switch
     self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, kTabBarHeight + kStatusBarHeight, size.width, size.height - kTabBarHeight - kStatusBarHeight)];
     self.scrollView.contentSize = CGSizeMake(scrollSize.width*2, scrollSize.height);
     self.scrollView.pagingEnabled = YES;
@@ -37,6 +39,7 @@ static const CGFloat kTableContentInset = 200;
     
     UIEdgeInsets insets = UIEdgeInsetsMake(kTableContentInset, 0, 0, 0);
     
+    // two tableView for example
     self.tableView1 = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, scrollSize.width, scrollSize.height)];
     self.tableView1.delegate = self;
     self.tableView1.dataSource = self;
@@ -48,15 +51,18 @@ static const CGFloat kTableContentInset = 200;
     self.tableView2 = [[UITableView alloc] initWithFrame:CGRectMake(scrollSize.width, 0, scrollSize.width, scrollSize.height)];
     self.tableView2.delegate = self;
     self.tableView2.dataSource = self;
-    self.tableView2.contentInset = insets;
-    self.tableView2.scrollIndicatorInsets = insets;
+    self.tableView2.contentInset = insets;          // content insets for tableView
+    self.tableView2.scrollIndicatorInsets = insets; // scroll insets
     self.tableView2.backgroundColor = [UIColor clearColor];
     [self.scrollView addSubview:self.tableView2];
     
+    // replace a real tab bar in your project
     self.tabBar = [[UIView alloc] initWithFrame:CGRectMake(0, kStatusBarHeight+kTableContentInset, size.width, kTabBarHeight)];
     self.tabBar.backgroundColor = [UIColor redColor];
     [self.view addSubview:self.tabBar];
 }
+
+#pragma mark - UITableView Delegate
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 20;
@@ -77,18 +83,22 @@ static const CGFloat kTableContentInset = 200;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
+#pragma mark - UIScrollView Delegate
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    if (scrollView == self.scrollView) {
+    if (scrollView == self.scrollView) { // tab switch
         
-    } else {
+    } else { // offset ajust
         
         CGFloat contentOffsetY = scrollView.contentOffset.y;
 
+        // control tabBar center
         CGPoint tabBarCenter = self.tabBar.center;
         tabBarCenter.y = fabs(MIN(0, contentOffsetY)) + kTabBarHeight;
         self.tabBar.center = tabBarCenter;
         
+        // control all tableViews offset
         for (UIView *view in self.scrollView.subviews) {
             if ([view isKindOfClass:[UITableView class]]) {
                 UITableView *tableView = (UITableView *)view;
