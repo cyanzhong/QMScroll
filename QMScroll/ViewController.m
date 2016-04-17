@@ -26,6 +26,10 @@ static const CGFloat kTableContentInset = 200;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    // I'm very lazy
+    // so you need implement header zooming effect yourself
+    
     CGSize size = self.view.bounds.size;
     
     CGSize scrollSize = CGSizeMake(size.width, size.height - kTabBarHeight - kStatusBarHeight);
